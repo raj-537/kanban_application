@@ -1,10 +1,13 @@
-import React from 'react'
+import React from 'react';
 
-const Card = ({id, title, tag, user}) => {
+// Card component that displays information for a ticket
+const Card = ({ id, title, tag, user }) => {
+  // Function to generate a random background color
   const color = () => {
     const randomColor = `rgb(${Math.floor(Math.random() * 100) + 155}, ${Math.floor(Math.random() * 100) + 155}, ${Math.floor(Math.random() * 100) + 155})`;
     return randomColor;
   };
+
   return (
     <div className="card-container">
       <div className="card-heading">
@@ -23,4 +26,4 @@ const Card = ({id, title, tag, user}) => {
   );
 }
 
-export default Card
+export default Card;

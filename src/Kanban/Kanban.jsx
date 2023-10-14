@@ -1,25 +1,30 @@
-import React from 'react'
-import Card from '../Card/Card'
-const Kanban = ({ tickets,users, groupingOption, sortingOption }) => {
+import React from 'react';
+import Card from '../Card/Card';
 
+// Kanban component that takes tickets, users, groupingOption, and sortingOption as props
+const Kanban = ({ tickets, users, groupingOption, sortingOption }) => {
+
+  // Check if groupingOption is null, and if so, try to load it from localStorage
   if (groupingOption === null) {
     const savedGroupingOption = localStorage.getItem('groupingOption');
     if (savedGroupingOption) {
-      groupingOption = savedGroupingOption
+      groupingOption = savedGroupingOption;
     } else {
-      groupingOption="status"; 
+      groupingOption = "status"; // Default to "status" if not found in localStorage
     }
   }
 
+  // Check if sortingOption is null, and if so, try to load it from localStorage
   if (sortingOption === null) {
     const savedSortingOption = localStorage.getItem('sortingOption');
     if (savedSortingOption) {
       sortingOption = savedSortingOption;
     } else {
-      sortingOption="priority"; 
+      sortingOption = "priority"; // Default to "priority" if not found in localStorage
     }
   }
 
+  // Function to group tickets based on the selected option (e.g., "priority" or "status")
   const groupTickets = (option) => {
     const grouped = {};
     if (option === "priority") {
@@ -41,25 +46,28 @@ const Kanban = ({ tickets,users, groupingOption, sortingOption }) => {
       });
     }
 
+    // Convert the grouped data into an array with group names and their respective tickets
     return Object.keys(grouped).map((group) => ({
       groupName: group,
       tickets: grouped[group],
     }));
   };
 
+  // Function to sort grouped data based on the selected option ,Priotity or Options
   const sortGroupedData = (data, option) => {
-    return data.map(group => {
+    return data.map((group) => {
       let groupName;
+
+      // Determine the group name based on the groupingOption
       if (groupingOption === 'userId') {
         groupName = getUserById(group.groupName).name;
-        
       } else if (groupingOption === 'priority') {
         groupName = getPriorityString(group.tickets[0].priority);
-       
       } else {
         groupName = group.groupName;
       }
-  
+
+      // Sort the tickets within the group based on the sortingOption
       return {
         groupName: groupName,
         tickets: group.tickets.slice().sort((a, b) => {
@@ -71,8 +79,9 @@ const Kanban = ({ tickets,users, groupingOption, sortingOption }) => {
         })
       };
     });
-  }
+  };
 
+  // Function to get a priority string based on the numeric priority value
   function getPriorityString(priority) {
     switch (priority) {
       case 4:
@@ -90,11 +99,13 @@ const Kanban = ({ tickets,users, groupingOption, sortingOption }) => {
     }
   }
 
+  // Function to find a user by their ID
   const getUserById = (userId) => {
     return users.find(u => u.id === userId);
   }
 
-  const groupedData = groupTickets(groupingOption );
+  // Group the tickets based on the grouping option and then sort them
+  const groupedData = groupTickets(groupingOption);
   const sortedData = sortGroupedData(groupedData, sortingOption);
 
   return (
@@ -120,7 +131,7 @@ const Kanban = ({ tickets,users, groupingOption, sortingOption }) => {
                         id={ticket.id}
                         title={ticket.title}
                         status={ticket.status}
-                        tag={ticket.tag[0]}               
+                        tag={ticket.tag[0]}
                         user={getUserById(ticket.userId).name}
                       />
                     </div>
@@ -135,4 +146,4 @@ const Kanban = ({ tickets,users, groupingOption, sortingOption }) => {
   );
 }
 
-export default Kanban
+export default Kanban;
